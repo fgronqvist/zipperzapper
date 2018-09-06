@@ -1,4 +1,4 @@
-#Design document
+# Design document
 
 I think I have used some kind of compression programs as long as I have been using computers, but I have not really thought about how they work. I have known the basics about them, but actually implementing one will be quite intresting.
 
