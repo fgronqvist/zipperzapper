@@ -13,4 +13,4 @@ Things done this week
 | Date | Hours | What|
 |---|---|---|
 |2018-09-05| 2h | Project creation|
-|2018-09-06| ? | Research, settling on program and documenting|
+|2018-09-06| 3h | Research, settling on program and documenting|
