@@ -1,3 +1,0 @@
-#Määrittelydokumentti
-
-Lorem Ipsum...
