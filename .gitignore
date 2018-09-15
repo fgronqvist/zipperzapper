@@ -25,3 +25,6 @@ hs_err_pid*
 /ZipperZapper/nbproject/
 /ZipperZapper/build.xml
 /ZipperZapper/manifest.mf
+/ZipperZapper/build/
+/ZipperZapper/test/*.txt
+/ZipperZapper/test/*.zipper
