@@ -5,10 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -18,6 +14,8 @@ import java.util.zip.ZipOutputStream;
  * @author Fredrik Grönqvist <fredrik.gronqvist@gmail.com>
  */
 public class Compress {
+    
+    
     
     /**
      * Compress a file using java.util.ZipOutputStream
