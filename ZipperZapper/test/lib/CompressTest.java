@@ -52,13 +52,22 @@ public class CompressTest {
     }
 
     /**
+     * Default setup test files with 100000 lines.
+     *
+     * @throws IOException
+     */
+    public void setupFiles() throws IOException {
+        this.setupFiles(100000);
+    }
+
+    /**
      * The files should be setup only once per test-cycle, so running them
      * before each test is not an option.
      *
+     * @param lines
      * @throws java.io.FileNotFoundException
      */
-    public void setupFiles() throws FileNotFoundException, IOException {
-        System.out.println("setupFiles");
+    public void setupFiles(int lines) throws FileNotFoundException, IOException {
         // Remove existing test datafiles
         if (this.getFile(this.outputfile).exists()) {
             this.getFile(this.outputfile).delete();
@@ -69,7 +78,7 @@ public class CompressTest {
 
         // Create testdata
         FileOutputStream out = new FileOutputStream(this.inputfile);
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < lines; i++) {
             String input = "Line " + i + " of data with random string at the end: ";
             input = input + String.valueOf(Math.random() + "\n");
             out.write(input.getBytes());
@@ -90,14 +99,14 @@ public class CompressTest {
     }
 
     /**
-     * A file hash calculator. 
+     * A file hash calculator.
      * https://www.codejava.net/coding/how-to-calculate-md5-and-sha-hash-values-in-java
-     * 
+     *
      * @param file
      * @param algorithm that java.security.MessageDigest accepts
      * @return
      * @throws IOException
-     * @throws NoSuchAlgorithmException 
+     * @throws NoSuchAlgorithmException
      */
     private String hashFile(File file, String algorithm) throws IOException, NoSuchAlgorithmException {
         FileInputStream inputStream = new FileInputStream(file);
@@ -126,9 +135,8 @@ public class CompressTest {
      */
     @Test
     public void testJavaUtilCompression() throws Exception {
-        System.out.println("javaUtilCompression");
         this.setupFiles();
-        
+
         Compress instance = new Compress();
         instance.javaUtilCompress(this.inputfile, this.outputfile);
         long inputfileSize = this.getFile(this.inputfile).length();
@@ -145,13 +153,27 @@ public class CompressTest {
      */
     @Test
     public void testJavaUtilDecompress() throws Exception {
-        System.out.println("javaUtilDecompression");
         Compress instance = new Compress();
         instance.javaUtilCompress(this.inputfile, this.outputfile);
         instance.javaUtilDecompress(this.outputfile, this.decompressOutputfile);
         String inputfileHash = this.hashFile(this.getFile(this.inputfile), "MD5");
         String inflatedHash = this.hashFile(this.getFile(this.decompressOutputfile), "MD5");
         assertEquals(inputfileHash, inflatedHash);
+    }
+
+    /**
+     * Test the ZipperZapper compression with small files.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testZipperSmallCompress() throws IOException {
+        this.setupFiles(2);
+        Compress instance = new Compress();
+        instance.zipperCompress(this.inputfile, this.outputfile);
+        long inputFilesize = this.getFile(this.inputfile).length();
+        long outputFilesize = this.getFile(this.outputfile).length();
+        assertTrue("Inputfilesize >= Outputfilesize or outputfile 0", outputFilesize > 0 && outputFilesize < inputFilesize);
     }
 
 }

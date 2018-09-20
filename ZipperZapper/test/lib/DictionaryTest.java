@@ -51,16 +51,22 @@ public class DictionaryTest {
     @Test
     public void testDictionaryRetrival() {
         Dictionary dic = new Dictionary();
-        dic.put("AAA", 123);
-        dic.put("BBB", 456);
-        dic.put("CCC", 789);
-        int a = dic.get("AAA");
-        int b = dic.get("BBB");
-        int c = dic.get("CCC");
+        dic.put("AAA");
+        dic.put("BBB");
+        dic.put("CCC");
+        int a = dic.get("a");
+        int b = dic.get("b");
+        int c = dic.get("c");
+        int aa = dic.get("AAA");
+        int bb = dic.get("BBB");
+        int cc = dic.get("CCC");
         //int d = dic.get("NOT FOUND");
-        assertEquals("AAA was not found", 123, a);
-        assertEquals("BBB was not found", 456, b);
-        assertEquals("CCC was not found", 789, c);
+        assertEquals("a was not found", 97, a);
+        assertEquals("b was not found", 98, b);
+        assertEquals("c was not found", 99, c);
+        assertEquals("AAA", 256, aa);
+        assertEquals("BBB", 257, bb);
+        assertEquals("CCC", 258, cc);
         //assertNull("NULL not returned", c);
     }
     
