@@ -7,17 +7,29 @@ package lib;
  * @author Fredrik Grönqvist <fredrik.gronqvist@gmail.com>
  */
 class Bucketentry <K, V> {
-    String key;
-    Integer value;
+    String keyString;
+    Integer valueInteger;
+    Integer keyInteger;
+    String valueString;
     Bucketentry<K,V> next;
     
     public Bucketentry(String key, Integer value, Bucketentry<K,V> next){
-        this.key = key;
-        this.value = value;
+        this.keyString = key;
+        this.valueInteger = value;
         this.next = next;
     }
     
-    public String getKey(){
-        return this.key;
+    public Bucketentry(Integer key, String value, Bucketentry<K,V> next){
+        this.keyInteger = key;
+        this.valueString = value;
+        this.next = next;
+    }
+    
+    public String getKeyString(){
+        return this.keyString;
+    }
+    
+    public Integer getKeyInteger(){
+        return this.keyInteger;
     }
 }
