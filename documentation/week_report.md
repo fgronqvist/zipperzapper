@@ -13,9 +13,15 @@ Things done week 2
 
 * Application structure
 * Application library work with Java.Util.Zip package. My first couple of attempts using java.util.deflate/inflate resulted in "garbled" deflated files when the inputfile was over the buffer size. I just could not get the FileInputStream and FileOutputStream to create a deflated file that was identical to the inflated one. These never made it into the repo.
-* Own HashMap implementation added
-* Unit tests created
 * Documentation
+
+Things done week 3
+
+* Own HashMap implementation added.
+* Zipper compression added but not working as expected.
+* Unit tests expanded.
+* Documentation
+ 
 
 ## Hours worked
 
@@ -26,3 +32,5 @@ Things done week 2
 |2018-09-09| 3h | Documentation touchup, Labtool registration, Research|
 |2018-09-15| 6h | Application structure, library implementation for java.util.zip, a basic structure for gui/menu implementation, unit-tests|
 |2018-09-16| 5h | Started on the Zippper implementation, research|
+|2018-09-19| 4h | Expanded on the Zipper implementation, research|
+|2018-09-20| 5h | Expanded on the Zipper implementation, added tests|
