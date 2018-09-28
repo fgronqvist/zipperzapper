@@ -31,6 +31,7 @@ public class TimerTest {
     
     @Before
     public void setUp() {
+       Timer.getInstance().reset();
     }
     
     @After
@@ -39,30 +40,46 @@ public class TimerTest {
 
     /**
      * Test of add method, of class Timer.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testAdd() {
-        System.out.println("add");
-        long milliseconds = 0L;
-        String event = "";
-        Timer instance = new Timer();
-        instance.add(milliseconds, event);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testAdd() throws InterruptedException {
+        Timer.getInstance().add("AAA 1");
+        Timer.getInstance().add("BBB 1");
+        assertEquals(2, Timer.getInstance().getEventCount());
     }
 
     /**
      * Test of getEvents method, of class Timer.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testGetEvents() {
-        System.out.println("getEvents");
-        Timer instance = new Timer();
-        String[][] expResult = null;
-        String[][] result = instance.getEvents();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetEvents() throws InterruptedException {
+        Timer.getInstance().add("AAA 2");
+        Timer.getInstance().add("BBB 2");
+        Thread.sleep(3000);
+        Timer.getInstance().add("CCC 2");
+        int i = Timer.getInstance().getEventCount();
+        TimerEvent[] list = Timer.getInstance().getEvents();
+        for(TimerEvent event : list){
+            System.out.println(event.getTime()+": "+event.getEvent());
+        }
+        assertEquals(3, list.length);
+    }
+    
+    /**
+     * Test the total running time.
+     * @throws InterruptedException 
+     */
+    @Test
+    public void testRunningTime() throws InterruptedException{
+        Timer.getInstance().add("AAA 3");
+        Timer.getInstance().add("BBB 3");
+        Thread.sleep(2000);
+        Timer.getInstance().add("CCC 3");
+        int r = Timer.getInstance().getRunningTime();
+        System.out.println("Running time: "+r);
+        assertTrue("Total running time should be > 0 but got "+r, r > 0);
     }
 
     /**
@@ -70,13 +87,12 @@ public class TimerTest {
      */
     @Test
     public void testGetEventCount() {
-        System.out.println("getEventCount");
-        Timer instance = new Timer();
-        int expResult = 0;
-        int result = instance.getEventCount();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int i = 0;
+        while( i < 50){
+            Timer.getInstance().add("T"+i);
+            i++;
+        }
+        assertEquals(i, Timer.getInstance().getEventCount());
     }
     
 }

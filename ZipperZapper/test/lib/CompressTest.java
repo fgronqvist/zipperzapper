@@ -10,11 +10,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -87,6 +87,20 @@ public class CompressTest {
 
     }
 
+    public void setupKnownInput() throws FileNotFoundException, IOException {
+        if (this.getFile(this.outputfile).exists()) {
+            this.getFile(this.outputfile).delete();
+        }
+        if (this.getFile(this.decompressOutputfile).exists()) {
+            this.getFile(this.decompressOutputfile).delete();
+        }
+
+        FileOutputStream out = new FileOutputStream(this.inputfile);
+        String input = "AAABBBCCC";
+        out.write(input.getBytes());
+        out.close();
+    }
+
     /**
      * Get a File object based on name.
      *
@@ -135,8 +149,7 @@ public class CompressTest {
      */
     @Test
     public void testJavaUtilCompression() throws Exception {
-        this.setupFiles();
-
+        this.setupFiles(100000);
         Compress instance = new Compress();
         instance.javaUtilCompress(this.inputfile, this.outputfile);
         long inputfileSize = this.getFile(this.inputfile).length();
@@ -153,6 +166,7 @@ public class CompressTest {
      */
     @Test
     public void testJavaUtilDecompress() throws Exception {
+        this.setupFiles(100000);
         Compress instance = new Compress();
         instance.javaUtilCompress(this.inputfile, this.outputfile);
         instance.javaUtilDecompress(this.outputfile, this.decompressOutputfile);
@@ -162,18 +176,56 @@ public class CompressTest {
     }
 
     /**
-     * Test the ZipperZapper compression with small files.
+     * Test the ZipperZapper compression with known input.
      *
      * @throws IOException
      */
     @Test
-    public void testZipperSmallCompress() throws IOException {
-        this.setupFiles(2);
+    public void testZipperKnownInput() throws IOException {
+        this.setupKnownInput();
         Compress instance = new Compress();
         instance.zipperCompress(this.inputfile, this.outputfile);
-        long inputFilesize = this.getFile(this.inputfile).length();
-        long outputFilesize = this.getFile(this.outputfile).length();
-        assertTrue("Inputfilesize >= Outputfilesize or outputfile 0", outputFilesize > 0 && outputFilesize < inputFilesize);
+        instance.zipperDecompress(this.outputfile, this.decompressOutputfile);
+        String inputline = Files.readAllLines(Paths.get(this.decompressOutputfile)).get(0);
+        String decompressed = Files.readAllLines(Paths.get(this.decompressOutputfile)).get(0);
+        assertEquals(inputline, decompressed);
+        //assertTrue("Output should be 65 256 66 258 67 260 but is "+line, line.equals("65 256 66 258 67 260"));
+    }
+
+    /**
+     * Test the ZipperZapper compression with small input.
+     *
+     * @param testlines
+     * @throws java.io.IOException
+     * @throws java.security.NoSuchAlgorithmException
+     */
+    @Test
+    public void testZipperSmallCompress() throws IOException, NoSuchAlgorithmException {
+        this.setupFiles(4);
+        Compress instance = new Compress();
+        instance.zipperCompress(this.inputfile, this.outputfile);
+        instance.zipperDecompress(this.outputfile, this.decompressOutputfile);
+        String inputfileHash = this.hashFile(this.getFile(this.inputfile), "MD5");
+        String inflatedHash = this.hashFile(this.getFile(this.decompressOutputfile), "MD5");
+        assertEquals(inputfileHash, inflatedHash);
+    }
+
+    /**
+     * Test the ZipperZapper compression with medium input.
+     *
+     * @param testlines
+     * @throws java.io.IOException
+     * @throws java.security.NoSuchAlgorithmException
+     */
+    @Test
+    public void testZipperMediumCompress() throws IOException, NoSuchAlgorithmException {
+        this.setupFiles(100000);
+        Compress instance = new Compress();
+        instance.zipperCompress(this.inputfile, this.outputfile);
+        instance.zipperDecompress(this.outputfile, this.decompressOutputfile);
+        String inputfileHash = this.hashFile(this.getFile(this.inputfile), "MD5");
+        String inflatedHash = this.hashFile(this.getFile(this.decompressOutputfile), "MD5");
+        assertEquals(inputfileHash, inflatedHash);
     }
 
 }

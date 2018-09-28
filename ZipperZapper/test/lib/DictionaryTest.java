@@ -17,28 +17,28 @@ import static org.junit.Assert.*;
  * @author Fredrik Grönqvist <fredrik.gronqvist@gmail.com>
  */
 public class DictionaryTest {
-    
+
     public DictionaryTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     @Test
-    public void testDictionaryInit(){
+    public void testDictionaryInit() {
         Dictionary dic = new Dictionary();
         int a = dic.get("a");
         int b = dic.get("b");
@@ -47,7 +47,7 @@ public class DictionaryTest {
         assertEquals("b was not found", 98, b);
         assertEquals("9 was not found", 57, nine);
     }
-    
+
     @Test
     public void testDictionaryRetrival() {
         Dictionary dic = new Dictionary();
@@ -69,6 +69,14 @@ public class DictionaryTest {
         assertEquals("CCC", 258, cc);
         //assertNull("NULL not returned", c);
     }
-    
-    
+
+    /**
+     * Test that the dictionary gives the right size
+     */
+    @Test
+    public void testDictionarySize() {
+        Dictionary dict = new Dictionary();
+        assertTrue("", dict.getIntegerDictionarySize().equals(256));
+    }
+
 }
