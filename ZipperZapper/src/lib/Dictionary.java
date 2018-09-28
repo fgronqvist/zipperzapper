@@ -8,22 +8,31 @@ package lib;
  */
 public class Dictionary {
 
-    private int dictionarySize = 0;
-    private int bucketSize = 10;
+    private int stringDictionarySize = 0;
+    private int integerDictionarySize = 0;
+    private int bucketSize = 4096;
     private Bucketentry<String, Integer>[] stringBucket;
     private Bucketentry<Integer, String>[] integerBucket;
 
-    public Dictionary() {
-        stringBucket = new Bucketentry[this.bucketSize];
-        this.initializeDictionary();
+    /**
+     * Set the bucketsize in bytes. Default is 4096.
+     *
+     * @param size
+     */
+    public void setBucketsize(int size) {
+        this.bucketSize = size;
     }
 
     /**
      * Generate the first 255 characters as the known dictionary.
      */
-    private void initializeDictionary() {
+    public void initializeDictionary() {
+        this.stringBucket = new Bucketentry[this.bucketSize];
+        this.integerBucket = new Bucketentry[this.bucketSize];
+
         for (int i = 0; i < 256; i++) {
             this.put("" + (char) i);
+            this.put(i, "" + (char) i);
         }
     }
 
@@ -41,12 +50,12 @@ public class Dictionary {
      */
     public void put(String key) {
         int hash = this.hash(key);
-        Bucketentry newEntry = new Bucketentry(key, this.dictionarySize, null);
+        Bucketentry newEntry = new Bucketentry(key, this.stringDictionarySize, null);
 
         if (this.stringBucket[hash] == null) {
             // This is the first entry for this bucket
             this.stringBucket[hash] = newEntry;
-            this.dictionarySize++;
+            this.stringDictionarySize++;
         } else {
             // This bucket has atleast one entry already, so we have to check
             // if the new entry has a key that maches one in the bucket. If it
@@ -83,7 +92,7 @@ public class Dictionary {
 
             // Update the dictionary size, so that the next value gets the right
             // dictionary place.
-            this.dictionarySize++;
+            this.stringDictionarySize++;
         }
     }
 
@@ -103,7 +112,7 @@ public class Dictionary {
         if (this.integerBucket[hash] == null) {
             // This is the first entry for this bucket
             this.integerBucket[hash] = newEntry;
-            this.dictionarySize++;
+            this.integerDictionarySize++;
         } else {
             // This bucket has atleast one entry already, so we have to check
             // if the new entry has a key that maches one in the bucket. If it
@@ -140,7 +149,34 @@ public class Dictionary {
 
             // Update the dictionary size, so that the next value gets the right
             // dictionary place.
-            this.dictionarySize++;
+            this.integerDictionarySize++;
+        }
+    }
+
+    /**
+     * Check if the key exists in the dictionary.
+     *
+     * @param key
+     * @return
+     */
+    public boolean hasKey(Integer key) {
+        int hash = Math.abs(key) % this.bucketSize;
+        if (this.integerBucket[hash] == null) {
+            // This bucket is empty, so nothing can be found
+            return false;
+        } else {
+            // This bucket has atleast one entry already, so we have to check
+            // if the wanted entry exists.
+            Bucketentry<Integer, String> current = this.integerBucket[hash];
+            while (current != null) {
+                if (current.getKeyInteger().equals(key)) {
+                    return true;
+                }
+                current = current.next; // get the next one in the linked list
+            }
+            // If we get here, we have reached the end of the list and no maching
+            // key was found.
+            return false;
         }
     }
 
@@ -200,6 +236,24 @@ public class Dictionary {
      */
     private int hash(String key) {
         return Math.abs(key.hashCode()) % this.bucketSize;
+    }
+
+    /**
+     * Get the current dictionary size.
+     *
+     * @return
+     */
+    public Integer getIntegerDictionarySize() {
+        return this.integerDictionarySize;
+    }
+
+    /**
+     * Get the current dictionary size.
+     *
+     * @return
+     */
+    public Integer getStringDictionarySize() {
+        return this.stringDictionarySize;
     }
 
     @Override
